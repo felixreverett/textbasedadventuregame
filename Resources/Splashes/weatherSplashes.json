@@ -1,0 +1,25 @@
+{
+    "blizzard": [
+		"A blizzard surrounds you."
+	],
+    "cloud": [
+		"Today is cloudy.",
+		"A little overcast today..."
+	],
+    "fog": [
+        "It's as thick as pea soup!"
+    ],
+    "hail": [
+		"It's hailing."
+	],
+    "rain": [
+		"It's raining.",
+		"It's a terrible day for rain..."
+	],
+    "snow": [
+		"It's snowing."
+	],
+    "sun": [
+		"It's sunny."
+	]
+}

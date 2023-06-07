@@ -1,0 +1,29 @@
+{
+	"/eat": {
+        "description": "eats the selected item in your inventory"
+    },
+	"/energy": {
+        "description": "shows the player's energy level"
+    },
+	"/exit": {
+        "description": "exits the game"
+    },
+	"/forage": {
+		"description": "searches the current biome for items and consumes some energy."
+	},
+	"/help": {
+        "description": "shows all commands"
+    },
+	"/inventory": {
+        "description": "accesses the player's inventory"
+    },
+	"/save": {
+        "description": "saves the player's progress"
+    },
+	"/sleep": {
+        "description": "sleeps, restoring all energy and resetting exhaustion debuff"
+    },
+    "/travel": {
+        "description": "moves the player to the next destination"
+    } 
+}

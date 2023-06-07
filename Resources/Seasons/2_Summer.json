@@ -1,0 +1,9 @@
+{
+    "seasonName": "Summer",
+    "temperatureModifier": 2,
+    "humidityModifier": 1,
+    "weatherWeights": {
+        "rain": 3,
+        "sun": 7
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "Pools": [{
+            "Rolls": {
+                "Min": 2,
+                "Max": 10
+            },
+            "Entries": [{
+                    "Name": "stick",
+                    "Weight": 10
+                }, {
+                    "Name": "grass",
+                    "Weight": 10
+                }, {
+                    "Name": "flint",
+                    "Weight": 4
+                }
+            ]
+        }, {
+            "Rolls": {
+                "Min": 1,
+                "Max": 2
+            },
+            "Entries": [{
+                    "Name": "grass",
+                    "Weight": 1
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,302 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Xml;
+using System.Text.Json;
+using static TextBasedAdventureGame.Objects;
+
+namespace TextBasedAdventureGame
+{
+    public class Game
+    {
+        //PROPERTIES
+        bool GameIsRunning {  get; set; }
+        bool DayIsRunning { get; set; }
+        int DayOfMonth { get; set; }
+        List<Season> SeasonsList { get; set; }
+        int CurrentSeasonId { get; set; }
+        Season CurrentSeason { get; set; }
+        string CurrentWeather { get; set; }
+        Dictionary<string, string[]> WeatherSplashes { get; set; }
+        Dictionary<string, Dictionary<string, string>> Commands { get; set; }
+        List<Biome> BiomesList { get; set; }
+        Biome CurrentBiome { get; set; }
+        Player Player { get; set; }
+
+        //CONSTRUCTORS
+        public Game(string playerName)
+        {
+            GameIsRunning = true;
+            DayIsRunning = true;
+            DayOfMonth = 0;
+            SeasonsList = LoadSeasons(folderPathSeasons);
+            BiomesList = LoadBiomes(folderPathBiomes);
+            CurrentSeasonId = 0;
+            CurrentSeason = SeasonsList[0];
+            CurrentWeather = "none";
+            CurrentBiome = SetBiome();
+            WeatherSplashes = LoadWeatherSplashes(filePathWeatherSplashes);
+            Commands = LoadCommands(filePathCommands);
+            Player = new Player(playerName);
+        }
+
+        //METHODS
+        public void GameStartup()
+        {
+            Console.WriteLine("Game Loading...");
+            //CommandList = LoadObject
+            LoadSeasons(folderPathSeasons);
+            LoadWeatherSplashes(filePathWeatherSplashes);
+            Console.WriteLine($"Welcome, {Player.Name}.");
+            GameLoop();
+        }
+
+        public void GameLoop()
+        {
+            GameIsRunning = true;
+
+            while (GameIsRunning)
+            {
+                NextDay();                   
+                DayIsRunning = true;
+
+                Console.WriteLine($"Today is day {DayOfMonth} of {CurrentSeason.seasonName}");
+                Console.WriteLine(SetWeatherSplash(WeatherSplashes, CurrentWeather)); //write the current weather
+                Console.WriteLine($"You wake up in a {CurrentBiome.BiomeName} biome."); //where are you
+                
+                while (DayIsRunning)
+                {
+                    Command(Console.ReadLine());
+                }
+            }
+        }
+
+        //LOAD METHODS
+        public List<Season> LoadSeasons(string path)
+        {
+            SeasonsList = new List<Season>();
+
+            foreach (string s in Directory.GetFiles(path))
+            {
+                if (s.EndsWith(".json")) //if it's a json file
+                {
+                    string jsonString = File.ReadAllText(s);
+                    Season newSeason = JsonSerializer.Deserialize<Season>(jsonString);
+                    SeasonsList.Add(newSeason);
+                }
+            }
+
+            return SeasonsList;
+        }
+
+        public Dictionary<string, Dictionary<string, string>> LoadCommands(string path)
+        {
+            return JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(File.ReadAllText(path));
+        }
+
+        public Dictionary<string, string[]> LoadWeatherSplashes(string path)
+        {
+            string jsonString = File.ReadAllText(path);
+            WeatherSplashes = JsonSerializer.Deserialize<Dictionary<string, string[]>>(jsonString);
+            return WeatherSplashes;
+        }
+
+        public List<Biome> LoadBiomes(string path)
+        {
+            List<Biome> BiomesList = new List<Biome>();
+
+            foreach (string s in Directory.GetFiles(path))
+            {
+                if (s.EndsWith(".json"))
+                {
+                    Biome biome = JsonSerializer.Deserialize<Biome>(File.ReadAllText(s));
+                    biome.LootTable = JsonSerializer.Deserialize<LootTable>(File.ReadAllText($"{folderPathLootTables}{biome.LootTableFilePath}"));
+                    BiomesList.Add(biome);
+                }
+            }
+
+            return BiomesList;
+        }
+
+        //Generate Loot
+        public Dictionary<string, int> GenerateLoot(LootTable lootTable)
+        {
+            Dictionary<string, int> Loot = new();
+
+            //for every pool in the LootTable
+            foreach (Pool pool in lootTable.Pools)
+            {
+                Random random = new Random();
+                int numberOfRolls = random.Next(pool.Rolls.Min, pool.Rolls.Max);
+
+                //get sum of weights
+                int sumOfWeights = 0;
+                foreach (Entry entry in  pool.Entries)
+                {
+                    sumOfWeights += entry.Weight;
+                }
+
+                //for every roll
+                for (int i = 0; i < numberOfRolls; i++)
+                {
+                    //grab a random item accounting for its weight
+                    int r = random.Next(sumOfWeights);
+                    foreach (Entry entry in pool.Entries)
+                    {
+                        r -= entry.Weight;
+                        if (r <= 0)
+                        {
+                            if (!Loot.ContainsKey(entry.Name))
+                            {
+                                Loot.Add(entry.Name, 1);
+                            }
+                            else
+                            {
+                                Loot[entry.Name]++;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            return Loot;
+        }
+       
+        //SET METHODS
+        public string SetWeatherSplash(Dictionary<string, string[]> splashes, string current)
+        {
+            Random random = new Random();
+            int r = random.Next(splashes[current].Length);
+            return splashes[current][r];
+        }
+        public string SetWeather(Season season)
+        {
+            int sumOfWeights = season.weatherWeights.Values.Sum();
+            Random random = new Random();
+            int r = random.Next(sumOfWeights);
+            foreach (string weather in season.weatherWeights.Keys)
+            {
+                r -= season.weatherWeights[weather];
+                if (r <= 0)
+                {
+                    return weather;
+                }
+            }
+            return "Error: no weather found";
+        }
+
+        public Biome SetBiome()
+        {
+            Random random = new Random();
+            int r = random.Next(BiomesList.Count);
+            return BiomesList[r];
+        }
+
+        //NEXT METHODS
+        public void NextDay()
+        {
+            DayOfMonth++;
+            if (DayOfMonth > 28)
+            {
+                DayOfMonth = 1;
+                NextSeason();
+            }
+            CurrentWeather = SetWeather(CurrentSeason);
+            //humidity = SetHumidity(Season, Weather);
+            //temperature = SetTemperature(Season, Weather);
+        }
+
+        public void NextSeason()
+        {
+            CurrentSeasonId++;
+            if (CurrentSeasonId >= SeasonsList.Count)
+            {
+                CurrentSeasonId = 0;
+            }
+            CurrentSeason = SeasonsList[CurrentSeasonId];
+        }
+
+
+        public void Command(string input)
+        {
+            string[] splitInput = input.Split(" ");
+            switch(splitInput[0])
+            {
+                case "/eat":
+                    {
+                        Console.WriteLine("this isn't implemented yet.");
+                        break;
+                    }
+                case "/energy":
+                    {
+                        Console.WriteLine("this isn't implemented yet.");
+                        break;
+                    }
+                case "/exit":
+                    {
+                        Console.WriteLine("this isn't implemented yet.");
+                        break;
+                    }
+                case "/forage":
+                    {
+                        Console.WriteLine("You have a look around to forage.");
+                        Dictionary<string, int> Test = GenerateLoot(CurrentBiome.LootTable);
+                        Player.AddItemsToInventory(Test);
+                        break;
+                    }
+                case "/help":
+                    {
+                        Console.WriteLine("Here is a list of valid commands:");
+                        foreach (string s in Commands.Keys)
+                        {
+                            Console.WriteLine($"{s}: {Commands[s]["description"]}");
+                        }
+                        break;
+                    }
+                case "/inventory" or "/i":
+                    {
+                        if (Player.Inventory != null)
+                        {
+                            Console.WriteLine($"{Player.Name}'s inventory:");
+                            foreach (KeyValuePair<string, int> pair in Player.Inventory)
+                            {
+                                Console.WriteLine($"{pair.Key}: {pair.Value}");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("You don't have anything!");
+                        }
+                        break;
+                    }
+                case "/save":
+                    {
+                        Console.WriteLine("as if I'd have already added this!");
+                        break;
+                    }
+                case "/sleep":
+                    {
+                        DayIsRunning = false;
+                        break;
+                    }
+                case "/travel":
+                    {
+                        CurrentBiome = SetBiome();
+                        Console.WriteLine($"You enter a {CurrentBiome.BiomeName} biome.");
+                        break;
+                    }
+                default:
+                    Console.WriteLine("Unrecognised Command. Please type /help to show a list of valid commands.");
+                    break;
+            }
+        }
+
+        //Filepaths
+        string folderPathSeasons = @"D:\Programming\C#\TextBasedAdventureGame\Resources\Seasons";
+        string filePathWeatherSplashes = @"D:\Programming\C#\TextBasedAdventureGame\Resources\Splashes\weatherSplashes.json";
+        string filePathCommands = @"D:\Programming\C#\TextBasedAdventureGame\Resources\commands.json";
+        string folderPathBiomes = @"D:\Programming\C#\TextBasedAdventureGame\Resources\Biomes";
+        string folderPathLootTables = @"D:\Programming\C#\TextBasedAdventureGame\Resources\LootTables";
+
+    }
+}
