@@ -3,5 +3,5 @@
 ################################################################################
 
 /.vs/TextBasedAdventureGame/FileContentIndex
-/bin/Debug/net6.0
-/obj
+**/bin
+**/obj
