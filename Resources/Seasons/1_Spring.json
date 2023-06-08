@@ -1,8 +1,8 @@
 {
-    "seasonName": "Spring",
-    "temperatureModifier": 0,
-    "humidityModifier": 3,
-    "weatherWeights": {
+    "SeasonName": "Spring",
+    "TemperatureModifier": 0,
+    "HumidityModifier": 3,
+    "WeatherWeights": {
         "cloud" : 4,
 		"fog" : 1,
 		"rain" : 10,

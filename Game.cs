@@ -26,8 +26,6 @@ namespace TextBasedAdventureGame
         //CONSTRUCTORS
         public Game(string playerName)
         {
-            GameIsRunning = true;
-            DayIsRunning = true;
             DayOfMonth = 0;
             SeasonsList = LoadSeasons(folderPathSeasons);
             BiomesList = LoadBiomes(folderPathBiomes);
@@ -36,7 +34,7 @@ namespace TextBasedAdventureGame
             CurrentWeather = "none";
             CurrentBiome = SetBiome();
             WeatherSplashes = LoadWeatherSplashes(filePathWeatherSplashes);
-            Commands = LoadCommands(filePathCommands);
+            Commands = LoadCommands(filePathCommands); //it does do things :)
             Player = new Player(playerName);
         }
 
@@ -44,9 +42,6 @@ namespace TextBasedAdventureGame
         public void GameStartup()
         {
             Console.WriteLine("Game Loading...");
-            //CommandList = LoadObject
-            LoadSeasons(folderPathSeasons);
-            LoadWeatherSplashes(filePathWeatherSplashes);
             Console.WriteLine($"Welcome, {Player.Name}.");
             GameLoop();
         }
@@ -60,13 +55,13 @@ namespace TextBasedAdventureGame
                 NextDay();                   
                 DayIsRunning = true;
 
-                Console.WriteLine($"Today is day {DayOfMonth} of {CurrentSeason.seasonName}");
-                Console.WriteLine(SetWeatherSplash(WeatherSplashes, CurrentWeather)); //write the current weather
+                Console.WriteLine($"Today is day {DayOfMonth} of {CurrentSeason.SeasonName}");
+                Console.WriteLine(GetWeatherSplash(WeatherSplashes, CurrentWeather)); //write the current weather
                 Console.WriteLine($"You wake up in a {CurrentBiome.BiomeName} biome."); //where are you
                 
                 while (DayIsRunning)
                 {
-                    Command(Console.ReadLine());
+                    HandleCommand(Console.ReadLine()!);
                 }
             }
         }
@@ -81,7 +76,7 @@ namespace TextBasedAdventureGame
                 if (s.EndsWith(".json")) //if it's a json file
                 {
                     string jsonString = File.ReadAllText(s);
-                    Season newSeason = JsonSerializer.Deserialize<Season>(jsonString);
+                    Season newSeason = JsonSerializer.Deserialize<Season>(jsonString)!;
                     SeasonsList.Add(newSeason);
                 }
             }
@@ -91,13 +86,13 @@ namespace TextBasedAdventureGame
 
         public Dictionary<string, Dictionary<string, string>> LoadCommands(string path)
         {
-            return JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(File.ReadAllText(path));
+            return JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(File.ReadAllText(path))!;
         }
 
-        public Dictionary<string, string[]> LoadWeatherSplashes(string path)
+        public Dictionary<string, string[]> LoadWeatherSplashes(string path) //todo: move weather splashes to be member of weather object
         {
             string jsonString = File.ReadAllText(path);
-            WeatherSplashes = JsonSerializer.Deserialize<Dictionary<string, string[]>>(jsonString);
+            WeatherSplashes = JsonSerializer.Deserialize<Dictionary<string, string[]>>(jsonString)!;
             return WeatherSplashes;
         }
 
@@ -109,8 +104,8 @@ namespace TextBasedAdventureGame
             {
                 if (s.EndsWith(".json"))
                 {
-                    Biome biome = JsonSerializer.Deserialize<Biome>(File.ReadAllText(s));
-                    biome.LootTable = JsonSerializer.Deserialize<LootTable>(File.ReadAllText($"{folderPathLootTables}{biome.LootTableFilePath}"));
+                    Biome biome = JsonSerializer.Deserialize<Biome>(File.ReadAllText(s))!;
+                    biome.LootTable = JsonSerializer.Deserialize<LootTable>(File.ReadAllText($"{folderPathLootTables}{biome.LootTableFilePath}"))!;
                     BiomesList.Add(biome);
                 }
             }
@@ -163,7 +158,7 @@ namespace TextBasedAdventureGame
         }
        
         //SET METHODS
-        public string SetWeatherSplash(Dictionary<string, string[]> splashes, string current)
+        public string GetWeatherSplash(Dictionary<string, string[]> splashes, string current) //todo: make method of weather class
         {
             Random random = new Random();
             int r = random.Next(splashes[current].Length);
@@ -171,12 +166,12 @@ namespace TextBasedAdventureGame
         }
         public string SetWeather(Season season)
         {
-            int sumOfWeights = season.weatherWeights.Values.Sum();
+            int sumOfWeights = season.WeatherWeights.Values.Sum();
             Random random = new Random();
             int r = random.Next(sumOfWeights);
-            foreach (string weather in season.weatherWeights.Keys)
+            foreach (string weather in season.WeatherWeights.Keys)
             {
-                r -= season.weatherWeights[weather];
+                r -= season.WeatherWeights[weather];
                 if (r <= 0)
                 {
                     return weather;
@@ -217,7 +212,7 @@ namespace TextBasedAdventureGame
         }
 
 
-        public void Command(string input)
+        public void HandleCommand(string input)
         {
             string[] splitInput = input.Split(" ");
             switch(splitInput[0])
@@ -240,8 +235,8 @@ namespace TextBasedAdventureGame
                 case "/forage":
                     {
                         Console.WriteLine("You have a look around to forage.");
-                        Dictionary<string, int> Test = GenerateLoot(CurrentBiome.LootTable);
-                        Player.AddItemsToInventory(Test);
+                        Dictionary<string, int> loot = GenerateLoot(CurrentBiome.LootTable);
+                        Player.AddItemsToInventory(loot);
                         break;
                     }
                 case "/help":
@@ -292,11 +287,11 @@ namespace TextBasedAdventureGame
         }
 
         //Filepaths
-        string folderPathSeasons = @"D:\Programming\C#\TextBasedAdventureGame\Resources\Seasons";
-        string filePathWeatherSplashes = @"D:\Programming\C#\TextBasedAdventureGame\Resources\Splashes\weatherSplashes.json";
-        string filePathCommands = @"D:\Programming\C#\TextBasedAdventureGame\Resources\commands.json";
-        string folderPathBiomes = @"D:\Programming\C#\TextBasedAdventureGame\Resources\Biomes";
-        string folderPathLootTables = @"D:\Programming\C#\TextBasedAdventureGame\Resources\LootTables";
+        string folderPathSeasons = @"..\..\..\Resources\Seasons";
+        string filePathWeatherSplashes = @"..\..\..\Resources\Splashes\weatherSplashes.json";
+        string filePathCommands = @"..\..\..\Resources\commands.json";
+        string folderPathBiomes = @"..\..\..\Resources\Biomes";
+        string folderPathLootTables = @"..\..\..\Resources\LootTables";
 
     }
 }

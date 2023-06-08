@@ -1,8 +1,8 @@
 {
-    "seasonName": "Summer",
-    "temperatureModifier": 2,
-    "humidityModifier": 1,
-    "weatherWeights": {
+    "SeasonName": "Summer",
+    "TemperatureModifier": 2,
+    "HumidityModifier": 1,
+    "WeatherWeights": {
         "rain": 3,
         "sun": 7
     }

@@ -14,18 +14,18 @@ namespace TextBasedAdventureGame
 
         public class Entry
         {
-            public string? Name { get; set; }
+            public string Name { get; set; } = string.Empty;
             public int Weight { get; set; }
         }
 
         public class Pool
         {
-            public RollRange Rolls { get; set; }
-            public List<Entry> Entries { get; set; }
+            public RollRange Rolls { get; set; } = new();
+            public List<Entry> Entries { get; set; } = new();
         }
 
         public class LootTable
         {
-            public List<Pool> Pools { get; set; }
+            public List<Pool> Pools { get; set; } = new();
         }
 }

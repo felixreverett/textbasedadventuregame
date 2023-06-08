@@ -11,10 +11,10 @@ namespace TextBasedAdventureGame
         //every instance of Season must have these members:
         public class Season
         {
-            public string seasonName { get; set; }
-            public int temperatureModifier { get; set; }
-            public int humidityModifier { get; set; }
-            public Dictionary<string, int>? weatherWeights { get; set; }
+            public string SeasonName { get; set; } = string.Empty;
+            public int TemperatureModifier { get; set; }
+            public int HumidityModifier { get; set; }
+            public Dictionary<string, int>? WeatherWeights { get; set; }
         }
 
         public class Weather
@@ -26,10 +26,10 @@ namespace TextBasedAdventureGame
 
         public class Biome
         {
-            public string BiomeName { get; set; }
-            public string LootTableFilePath { get; set; }
-            public string Climate { get; set; }
-            public LootTable LootTable { get; set; }
+            public string BiomeName { get; set; } = string.Empty;
+            public string LootTableFilePath { get; set; } = string.Empty;
+            public string Climate { get; set; } = string.Empty;
+            public LootTable LootTable { get; set; } = new();
 
         }
     }
