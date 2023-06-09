@@ -5,16 +5,16 @@
                 "Max": 1
             },
             "Entries": [{
-                    "Name": "stick",
+                    "Name": "Stick",
                     "Weight": 10
                 }, {
-                    "Name": "apple",
+                    "Name": "Apple",
                     "Weight": 10
                 }, {
-                    "Name": "berry",
+                    "Name": "Berry",
                     "Weight": 4
                 }, {
-					"Name": "mushroom",
+					"Name": "Mushroom",
 					"Weight": 1
 				}
             ]

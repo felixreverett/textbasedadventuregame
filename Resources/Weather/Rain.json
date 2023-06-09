@@ -1,0 +1,9 @@
+{
+	"WeatherName": "Rain",
+	"BaseTemperature": 12,
+	"Visibility": 0.3,
+	"Splashes": [
+		"It's raining.",
+		"It's a terrible day for rain..."
+	]
+}

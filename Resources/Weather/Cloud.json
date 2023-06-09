@@ -1,0 +1,9 @@
+{
+	"WeatherName": "Cloud",
+	"BaseTemperature": 15,
+	"Visibility": 0.8,
+	"Splashes": [
+		"Today is cloudy.",
+		"A little overcast today..."
+	]
+}

@@ -1,0 +1,8 @@
+{
+	"WeatherName": "Hail",
+	"BaseTemperature": 0,
+	"Visibility": 0.4,
+	"Splashes": [
+		"It's hailing."
+	]
+}

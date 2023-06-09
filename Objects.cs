@@ -32,5 +32,11 @@ namespace TextBasedAdventureGame
             public LootTable LootTable { get; set; } = new();
 
         }
+
+        public class CraftingRecipe
+        {
+            public string ItemName { get; set; } = string.Empty;
+            public Dictionary<string, int> ItemRecipe { get; set; } = new();
+        }
     }
 }

@@ -1,0 +1,9 @@
+{
+	"WeatherName": "Sun",
+	"BaseTemperature": 20,
+	"Visibility": 0.9,
+	"Splashes": [
+		"It's sunny.",
+		"The sun shines brightly in the sky."
+	]
+}
