@@ -310,20 +310,9 @@ namespace TextBasedAdventureGame
                         }
                         break;
                     }
-                case "/inventory" or "/i": //todo: improve this
+                case "/inventory" or "/i":
                     {
-                        if (Player.Inventory != null)
-                        {
-                            Console.WriteLine($"{Player.Name}'s inventory:");
-                            foreach (KeyValuePair<string, int> pair in Player.Inventory)
-                            {
-                                Console.WriteLine($"{pair.Key}: {pair.Value}");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("You don't have anything!");
-                        }
+                        Draw.DrawInventory(Player);
                         break;
                     }
                 case "/save":
