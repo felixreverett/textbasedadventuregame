@@ -56,16 +56,17 @@ namespace TextBasedAdventureGame
         }
 
         //craft "amount" or "craftingLimit" number of items from recipe
-        public CraftItemResult TryCraftItem(Objects.CraftingRecipe craftingRecipe, string itemName, int amount = 1)
+        //todo: refine this algorithm
+        public CraftItemResult TryCraftItem(Item item, string itemName, int amount = 1)
         {
             CraftItemResult result = CraftItemResult.FullSuccess;
             int craftingLimit = amount;
             int currentCraftingLimit = 0;
-            foreach (KeyValuePair<string, int> item in craftingRecipe.ItemRecipe)
+            foreach (KeyValuePair<string, int> ingredient in item.CraftingRecipe!) //it won't be null
             {
-                if (Inventory.ContainsKey(item.Key) && Inventory[item.Key] >= item.Value)
+                if (Inventory.ContainsKey(ingredient.Key) && Inventory[ingredient.Key] >= ingredient.Value)
                 {
-                    currentCraftingLimit = Inventory[item.Key] / item.Value;
+                    currentCraftingLimit = Inventory[ingredient.Key] / ingredient.Value;
                     if (currentCraftingLimit < craftingLimit)
                     {
                         craftingLimit = currentCraftingLimit;
@@ -85,12 +86,12 @@ namespace TextBasedAdventureGame
 
             Console.WriteLine($"Crafting {amount} of {itemName}");
 
-            foreach (KeyValuePair<string, int> item in craftingRecipe.ItemRecipe)
+            foreach (KeyValuePair<string, int> ingredient in item.CraftingRecipe)
             {
-                RemoveItemFromInventory(item.Key, item.Value * amount);
+                RemoveItemFromInventory(ingredient.Key, ingredient.Value * amount);
             }
 
-            AddItemToInventory(craftingRecipe.ItemName, amount);
+            AddItemToInventory(item.ItemName, amount);
 
             return result;
         }

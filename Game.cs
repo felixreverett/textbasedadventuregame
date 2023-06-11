@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
 using static TextBasedAdventureGame.Objects;
 
 namespace TextBasedAdventureGame
@@ -16,7 +17,7 @@ namespace TextBasedAdventureGame
         Dictionary<string, string[]> WeatherSplashes { get; set; }
         Dictionary<string, Dictionary<string, string>> Commands { get; set; }
         List<Biome> BiomesList { get; set; }
-        List<CraftingRecipe> CraftingRecipesList { get; set; }
+        List<Item> ItemsList { get; set; }
         Biome CurrentBiome { get; set; }
         Player Player { get; set; }
 
@@ -26,7 +27,7 @@ namespace TextBasedAdventureGame
             DayOfMonth = 0;
             SeasonsList = LoadSeasons(folderPathSeasons);
             BiomesList = LoadBiomes(folderPathBiomes);
-            CraftingRecipesList = LoadCraftingRecipes(folderPathCraftingRecipes);
+            ItemsList = LoadItems(folderPathItems);
             CurrentSeasonId = 0;
             CurrentSeason = SeasonsList[0];
             CurrentWeather = "none";
@@ -64,10 +65,10 @@ namespace TextBasedAdventureGame
             }
         }
 
-        //return true if Recipe.RecipeName found in any Recipe
-        public bool IsRecipeInRecipeList(string itemName)
+        //return true if name matches query, and is craftable
+        public bool IsRecipeInItemList(string itemName)
         {
-            if (CraftingRecipesList.Any(recipe => recipe.ItemName == itemName))
+            if (ItemsList.Any(item => item.ItemName == itemName && item.CraftingRecipe != null))
             {
                 return true;
             }
@@ -121,20 +122,19 @@ namespace TextBasedAdventureGame
             return BiomesList;
         }
 
-        public List<CraftingRecipe> LoadCraftingRecipes(string path)
+        public List<Item> LoadItems(string path)
         {
-            List<CraftingRecipe> recipesList = new List<CraftingRecipe>();
-
+            List<Item> itemList = new List<Item>();
             foreach (string s in Directory.GetFiles(path))
             {
                 if (s.EndsWith(".json"))
                 {
-                    CraftingRecipe recipe = JsonSerializer.Deserialize<CraftingRecipe>(File.ReadAllText(s))!;
-                    recipesList.Add(recipe);
+                    Item item = JsonSerializer.Deserialize<Item>(File.ReadAllText(s))!;
+                    itemList.Add(item);
                 }
             }
-
-            return recipesList;
+            
+            return itemList;
         }
 
         //Generate Loot
@@ -181,13 +181,15 @@ namespace TextBasedAdventureGame
             return Loot;
         }
        
-        //SET METHODS
+        //GET METHODS
         public string GetWeatherSplash(Dictionary<string, string[]> splashes, string current) //todo: make method of weather class
         {
             Random random = new Random();
             int r = random.Next(splashes[current].Length);
             return splashes[current][r];
         }
+
+        //SET METHODS
         public string SetWeather(Season season)
         {
             int sumOfWeights = season.WeatherWeights.Values.Sum();
@@ -244,18 +246,18 @@ namespace TextBasedAdventureGame
                 //if an item is specified, try craft 1 or specified amount of that item
                 case "/craft":
                     {
-                        if (splitInput.Length > 1 && IsRecipeInRecipeList(splitInput[1]))
+                        if (splitInput.Length > 1 && IsRecipeInItemList(splitInput[1]))
                         {
-                            CraftingRecipe craftingRecipe = CraftingRecipesList.First(recipe => recipe.ItemName == splitInput[1]);
+                            Item item = ItemsList.First(recipe => recipe.ItemName == splitInput[1]);
                             CraftItemResult result = CraftItemResult.Null;
                             if (splitInput.Length > 2 && Int32.TryParse(splitInput[2], out int amount))
                             {
-                                result = Player.TryCraftItem(craftingRecipe, splitInput[1], Math.Abs(amount));
+                                result = Player.TryCraftItem(item, splitInput[1], Math.Abs(amount));
                             }
 
                             else
                             {
-                                result = Player.TryCraftItem(craftingRecipe, splitInput[1]);
+                                result = Player.TryCraftItem(item, splitInput[1]);
                             }
 
                             if (result == CraftItemResult.FullSuccess)
@@ -308,7 +310,7 @@ namespace TextBasedAdventureGame
                         }
                         break;
                     }
-                case "/inventory" or "/i":
+                case "/inventory" or "/i": //todo: improve this
                     {
                         if (Player.Inventory != null)
                         {
@@ -352,7 +354,7 @@ namespace TextBasedAdventureGame
         string filePathCommands = @"..\..\..\Resources\commands.json";
         string folderPathBiomes = @"..\..\..\Resources\Biomes";
         string folderPathLootTables = @"..\..\..\Resources\LootTables";
-        string folderPathCraftingRecipes = @"..\..\..\Resources\CraftingRecipes";
+        string folderPathItems = @"..\..\..\Resources\Items";
 
     }
 }

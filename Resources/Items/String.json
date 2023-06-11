@@ -1,0 +1,7 @@
+{
+	"ItemName": "String",
+	"CraftingRecipe": {
+		"Grass": 4
+	},
+	"IsEdible": false
+}
