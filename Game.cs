@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.Json;
 using static TextBasedAdventureGame.Objects;
+using static TextBasedAdventureGame.Utils;
 
 namespace TextBasedAdventureGame
 {
@@ -25,15 +26,15 @@ namespace TextBasedAdventureGame
         public Game(string playerName)
         {
             DayOfMonth = 0;
-            SeasonsList = LoadSeasons(folderPathSeasons);
+            SeasonsList = LoadAllObjectsIntoList<Season>(folderPathSeasons);
             BiomesList = LoadBiomes(folderPathBiomes);
-            ItemsList = LoadItems(folderPathItems);
+            ItemsList = LoadAllObjectsIntoList<Item>(folderPathItems);
             CurrentSeasonId = 0;
             CurrentSeason = SeasonsList[0];
             CurrentWeather = "none";
             CurrentBiome = SetBiome();
-            WeatherSplashes = LoadWeatherSplashes(filePathWeatherSplashes);
-            Commands = LoadCommands(filePathCommands); //it does do things :)
+            WeatherSplashes = LoadObject<Dictionary<string, string[]>>(filePathWeatherSplashes);
+            Commands = LoadObject<Dictionary<string, Dictionary<string, string>>>(filePathCommands); //it does do things :)
             Player = new Player(playerName);
         }
 
@@ -75,66 +76,22 @@ namespace TextBasedAdventureGame
             return false;
         }
 
-        //LOAD METHODS
-        public List<Season> LoadSeasons(string path)
-        {
-            SeasonsList = new List<Season>();
-
-            foreach (string s in Directory.GetFiles(path))
-            {
-                if (s.EndsWith(".json")) //if it's a json file
-                {
-                    string jsonString = File.ReadAllText(s);
-                    Season newSeason = JsonSerializer.Deserialize<Season>(jsonString)!;
-                    SeasonsList.Add(newSeason);
-                }
-            }
-
-            return SeasonsList;
-        }
-
-        public Dictionary<string, Dictionary<string, string>> LoadCommands(string path)
-        {
-            return JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(File.ReadAllText(path))!;
-        }
-
-        public Dictionary<string, string[]> LoadWeatherSplashes(string path) //todo: move weather splashes to be member of weather object
-        {
-            string jsonString = File.ReadAllText(path);
-            WeatherSplashes = JsonSerializer.Deserialize<Dictionary<string, string[]>>(jsonString)!;
-            return WeatherSplashes;
-        }
-
-        public List<Biome> LoadBiomes(string path)
+        //Only remaining custom Load method. Todo: change that
+        public List<Biome> LoadBiomes(string folderPath)
         {
             List<Biome> BiomesList = new List<Biome>();
 
-            foreach (string s in Directory.GetFiles(path))
+            foreach (string s in Directory.GetFiles(folderPath))
             {
                 if (s.EndsWith(".json"))
                 {
-                    Biome biome = JsonSerializer.Deserialize<Biome>(File.ReadAllText(s))!;
-                    biome.LootTable = JsonSerializer.Deserialize<LootTable>(File.ReadAllText($"{folderPathLootTables}{biome.LootTableFilePath}"))!;
+                    Biome biome = LoadObject<Biome>(s);
+                    biome.LootTable = LoadObject<LootTable>($"{folderPathLootTables}{biome.LootTableFilePath}")!;
                     BiomesList.Add(biome);
                 }
             }
 
             return BiomesList;
-        }
-
-        public List<Item> LoadItems(string path)
-        {
-            List<Item> itemList = new List<Item>();
-            foreach (string s in Directory.GetFiles(path))
-            {
-                if (s.EndsWith(".json"))
-                {
-                    Item item = JsonSerializer.Deserialize<Item>(File.ReadAllText(s))!;
-                    itemList.Add(item);
-                }
-            }
-            
-            return itemList;
         }
 
         //Generate Loot
