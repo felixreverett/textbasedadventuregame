@@ -1,6 +1,6 @@
 {
-	"WeatherName": "Blizzard",
-	"BaseTemperature": -10,
+	"WeatherName": "Fog",
+	"TemperatureMod": -3,
 	"Visibility": 0.1,
 	"Splashes": [
 		"A blizzard surrounds you."

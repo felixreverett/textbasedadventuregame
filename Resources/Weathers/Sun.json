@@ -1,6 +1,6 @@
 {
 	"WeatherName": "Sun",
-	"BaseTemperature": 20,
+	"TemperatureMod": 10,
 	"Visibility": 0.9,
 	"Splashes": [
 		"It's sunny.",

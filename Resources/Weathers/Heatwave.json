@@ -1,6 +1,6 @@
 {
 	"WeatherName": "Heatwave",
-	"BaseTemperature": 40,
+	"TemperatureMod": 25,
 	"Visibility": 0.5,
 	"Splashes": [
 		"A heatwave sweeps across the land."

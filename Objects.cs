@@ -12,16 +12,18 @@ namespace TextBasedAdventureGame
         public class Season
         {
             public string SeasonName { get; set; } = string.Empty;
-            public int TemperatureModifier { get; set; }
+            public int TemperatureBase { get; set; }
             public int HumidityModifier { get; set; }
             public Dictionary<string, int>? WeatherWeights { get; set; }
         }
 
         public class Weather
         {
-            public int baseHumidity;
-            public int baseTemperature;
-            public float visibility;
+            public string WeatherName { get; set; } = string.Empty;
+            public int TemperatureMod { get; set; }
+            public int BaseHumidity { get; set; }
+            public float Visibility { get; set; }
+            public string[] Splashes { get; set; }
         }
 
         public class Biome

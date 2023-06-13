@@ -1,6 +1,6 @@
 {
 	"WeatherName": "Rain",
-	"BaseTemperature": 12,
+	"TemperatureMod": 3,
 	"Visibility": 0.3,
 	"Splashes": [
 		"It's raining.",

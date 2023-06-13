@@ -1,6 +1,6 @@
 {
 	"WeatherName": "Hail",
-	"BaseTemperature": 0,
+	"TemperatureMod": -5,
 	"Visibility": 0.4,
 	"Splashes": [
 		"It's hailing."

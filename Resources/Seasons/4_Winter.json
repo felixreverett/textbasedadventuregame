@@ -1,0 +1,13 @@
+{
+    "SeasonName": "Winter",
+    "TemperatureBase": 5,
+    "HumidityModifier": 1,
+    "WeatherWeights": {
+        "Blizzard": 1,
+		"Cloud": 3,
+		"Hail": 3,
+		"Rain": 2,
+		"Snow": 10,
+        "Sun": 1		
+    }
+}

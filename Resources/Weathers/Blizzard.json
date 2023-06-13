@@ -1,0 +1,8 @@
+{
+	"WeatherName": "Blizzard",
+	"TemperatureMod": -15,
+	"Visibility": 0.1,
+	"Splashes": [
+		"A blizzard surrounds you."
+	]
+}

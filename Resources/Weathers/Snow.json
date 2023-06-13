@@ -1,8 +1,8 @@
 {
 	"WeatherName": "Snow",
-	"BaseTemperature": -1,
+	"TemperatureMod": -10,
 	"Visibility": 0.5,
 	"Splashes": [
-		"It's snowing"
+		"It's snowing."
 	]
 }

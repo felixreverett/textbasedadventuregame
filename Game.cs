@@ -14,11 +14,11 @@ namespace TextBasedAdventureGame
         List<Season> SeasonsList { get; set; }
         int CurrentSeasonId { get; set; }
         Season CurrentSeason { get; set; }
-        string CurrentWeather { get; set; }
-        Dictionary<string, string[]> WeatherSplashes { get; set; }
+        Weather CurrentWeather { get; set; }
         Dictionary<string, Dictionary<string, string>> Commands { get; set; }
         List<Biome> BiomesList { get; set; }
         List<Item> ItemsList { get; set; }
+        List<Weather> WeathersList { get; set; }
         Biome CurrentBiome { get; set; }
         Player Player { get; set; }
 
@@ -29,11 +29,11 @@ namespace TextBasedAdventureGame
             SeasonsList = LoadAllObjectsIntoList<Season>(folderPathSeasons);
             BiomesList = LoadBiomes(folderPathBiomes);
             ItemsList = LoadAllObjectsIntoList<Item>(folderPathItems);
+            WeathersList = LoadAllObjectsIntoList<Weather>(folderPathWeathers);
             CurrentSeasonId = 0;
             CurrentSeason = SeasonsList[0];
-            CurrentWeather = "none";
             CurrentBiome = SetBiome();
-            WeatherSplashes = LoadObject<Dictionary<string, string[]>>(filePathWeatherSplashes);
+            CurrentWeather = new Weather();
             Commands = LoadObject<Dictionary<string, Dictionary<string, string>>>(filePathCommands); //it does do things :)
             Player = new Player(playerName);
         }
@@ -56,7 +56,7 @@ namespace TextBasedAdventureGame
                 DayIsRunning = true;
 
                 Console.WriteLine($"Today is day {DayOfMonth} of {CurrentSeason.SeasonName}");
-                Console.WriteLine(GetWeatherSplash(WeatherSplashes, CurrentWeather)); //write the current weather
+                Console.WriteLine(GetWeatherSplash()); //write the current weather
                 Console.WriteLine($"You wake up in a {CurrentBiome.BiomeName} biome."); //where are you
                 
                 while (DayIsRunning)
@@ -139,15 +139,15 @@ namespace TextBasedAdventureGame
         }
        
         //GET METHODS
-        public string GetWeatherSplash(Dictionary<string, string[]> splashes, string current) //todo: make method of weather class
+        public string GetWeatherSplash()
         {
             Random random = new Random();
-            int r = random.Next(splashes[current].Length);
-            return splashes[current][r];
+            int r = random.Next(CurrentWeather.Splashes.Length);
+            return CurrentWeather.Splashes[r];
         }
 
         //SET METHODS
-        public string SetWeather(Season season)
+        public Weather SetWeather(Season season)
         {
             int sumOfWeights = season.WeatherWeights.Values.Sum();
             Random random = new Random();
@@ -157,10 +157,10 @@ namespace TextBasedAdventureGame
                 r -= season.WeatherWeights[weather];
                 if (r <= 0)
                 {
-                    return weather;
+                    return WeathersList.First(w => w.WeatherName == weather);
                 }
             }
-            return "Error: no weather found";
+            return new(); //I sure hope this isn't a bad coding practice
         }
 
         public Biome SetBiome()
@@ -306,11 +306,11 @@ namespace TextBasedAdventureGame
 
         //Filepaths
         string folderPathSeasons = @"..\..\..\Resources\Seasons";
-        string filePathWeatherSplashes = @"..\..\..\Resources\Splashes\weatherSplashes.json";
         string filePathCommands = @"..\..\..\Resources\commands.json";
         string folderPathBiomes = @"..\..\..\Resources\Biomes";
         string folderPathLootTables = @"..\..\..\Resources\LootTables";
         string folderPathItems = @"..\..\..\Resources\Items";
+        string folderPathWeathers = @"..\..\..\Resources\Weathers";
 
     }
 }

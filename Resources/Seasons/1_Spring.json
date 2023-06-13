@@ -1,12 +1,12 @@
 {
     "SeasonName": "Spring",
-    "TemperatureModifier": 0,
+    "TemperatureBase": 9,
     "HumidityModifier": 3,
     "WeatherWeights": {
-        "cloud" : 4,
-		"fog" : 1,
-		"rain" : 10,
-		"sun" : 10
+        "Cloud" : 4,
+		"Fog" : 1,
+		"Rain" : 9,
+		"Sun" : 6
     }
 }
 

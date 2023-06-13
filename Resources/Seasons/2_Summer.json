@@ -1,9 +1,11 @@
 {
     "SeasonName": "Summer",
-    "TemperatureModifier": 2,
+    "TemperatureBase": 16,
     "HumidityModifier": 1,
     "WeatherWeights": {
-        "rain": 3,
-        "sun": 7
+		"Cloud": 2,
+		"Heatwave": 2,
+        "Rain": 6,
+        "Sun": 10
     }
 }

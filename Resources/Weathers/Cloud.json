@@ -1,6 +1,6 @@
 {
 	"WeatherName": "Cloud",
-	"BaseTemperature": 15,
+	"TemperatureMod": 0,
 	"Visibility": 0.8,
 	"Splashes": [
 		"Today is cloudy.",

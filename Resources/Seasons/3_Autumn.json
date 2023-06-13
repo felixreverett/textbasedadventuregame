@@ -1,0 +1,13 @@
+{
+    "SeasonName": "Autumn",
+    "TemperatureBase": 11,
+    "HumidityModifier": 1,
+    "WeatherWeights": {
+		"Cloud": 5,
+		"Fog": 3,
+		"Hail": 1,
+        "Rain": 5,
+		"Snow": 1,
+        "Sun": 5
+    }
+}
