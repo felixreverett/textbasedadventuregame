@@ -238,12 +238,22 @@ namespace TextBasedAdventureGame
                     }
                 case "/eat":
                     {
-                        Console.WriteLine("this isn't implemented yet.");
+                        if (splitInput.Length > 1 && Player.Inventory.ContainsKey(splitInput[1]))
+                        {
+                            Item item = ItemsList.First(i => i.ItemName == splitInput[1]);
+                            int playerEnergy = Player.CurrentEnergy;
+                            Player.ConsumeItem(item);
+                            Console.WriteLine($"> Consumed 1 {splitInput[1]}, restoring {Player.CurrentEnergy - playerEnergy} energy.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("! You don't have enough items to do that");
+                        }
                         break;
                     }
                 case "/energy":
                     {
-                        Console.WriteLine("this isn't implemented yet.");
+                        Console.WriteLine($">{Player.Name}'s current energy: {Player.CurrentEnergy}/{Player.MaxEnergy}");
                         break;
                     }
                 case "/exit":
@@ -253,7 +263,7 @@ namespace TextBasedAdventureGame
                     }
                 case "/forage":
                     {
-                        Console.WriteLine("You have a look around to forage.");
+                        Console.WriteLine("> You have a look around to forage.");
                         Dictionary<string, int> loot = GenerateLoot(CurrentBiome.LootTable);
                         Player.AddItemsToInventory(loot);
                         break;

@@ -13,12 +13,18 @@ namespace TextBasedAdventureGame
         {
             Name = playerName;
             Inventory = new Dictionary<string, int>();
-            Health = 20;
+            CurrentHealth = 20;
+            MaxHealth = 20;
+            CurrentEnergy = 100;
+            MaxEnergy = 100;
         }
 
         public string Name { get; set; }
         public Dictionary<string, int> Inventory { get; set; }
-        public int Health { get; set; }
+        public int CurrentHealth { get; set; }
+        public int MaxHealth { get; set; }
+        public int CurrentEnergy { get; set; }
+        public int MaxEnergy { get; set; } 
 
         //todo: probably remove this as a member of Player
         public void AddItemsToInventory(Dictionary<string, int> items)
@@ -94,6 +100,31 @@ namespace TextBasedAdventureGame
             AddItemToInventory(item.ItemName, amount);
 
             return result;
+        }
+
+        //restores given amount of energy
+        public void RestoreEnergy(int amount)
+        {
+            if (MaxEnergy - CurrentEnergy < amount)
+            {
+                CurrentEnergy = MaxEnergy;
+            }
+            else
+            {
+                CurrentEnergy += amount;
+            }
+        }
+
+        //Consumes the item
+        public void ConsumeItem(Item item)
+        {
+            if (item.IsEdible)
+            {
+                RestoreEnergy(item.EnergyPoints);
+                RemoveItemFromInventory(item.ItemName, 1);
+            }
+            //todo: add other parameters, and don't remove item until all have been checked.
+            //why: this will allow some items to both restore health and energy.
         }
     }
 }
